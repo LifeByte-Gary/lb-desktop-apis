@@ -13,6 +13,15 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'permission_level' => 0,
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -21,6 +30,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'company',
+        'department',
+        'job_title',
+        'location_id',
+        'desk',
+        'state',
+        'type',
+        'permission_level',
     ];
 
     /**
