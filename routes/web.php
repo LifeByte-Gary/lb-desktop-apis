@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', static function () {
+    return [
+        'Laravel' => app()->version(),
+        'CSRF Token' => csrf_token(),
+    ];
 });
+
+require __DIR__.'/auth.php';
