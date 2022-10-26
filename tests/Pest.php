@@ -11,6 +11,8 @@
 |
 */
 
+use App\Models\User;
+
 uses(Tests\TestCase::class)->in('Feature');
 
 /*
@@ -39,7 +41,33 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function something(): void
 {
-    // ..
+
 }
+
+/*
+|--------------------------------------------------------------------------
+| Reusable (Shared) Setup and Teardown
+|--------------------------------------------------------------------------
+|
+| At some point, you may need (or want) to share some kind of test scenario setup or teardown
+| procedure.
+|
+*/
+
+uses()
+    ->beforeEach(function () {
+        $this->adminManager = User::factory()->create([
+            'permission_level' => 2
+        ]);
+
+        $this->admin = User::factory()->create([
+            'permission_level' => 1
+        ]);
+
+        $this->normalUser = User::factory()->create([
+            'permission_level' => 0
+        ]);
+    })
+    ->in('Feature/User');

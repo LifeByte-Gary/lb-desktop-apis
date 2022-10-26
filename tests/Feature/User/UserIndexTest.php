@@ -7,43 +7,28 @@ use function Pest\Laravel\getJson;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    $this->permittedUser1 = User::factory()->create([
-        'permission_level' => 1
-    ]);
-
-    $this->permittedUser2 = User::factory()->create([
-        'permission_level' => 2
-    ]);
-
-    $this->nonPermittedUser = User::factory()->create([
-        'permission_level' => 0
-    ]);
-});
-
-it('only allows permitted users to get user collection', function () {
-    // Test user with permission level 1 can get user collection.
-    actingAs($this->permittedUser1);
-    getJson("/api/v1/users")
+it('only returns user collection to permitted users', function () {
+    // Test user with permission level 2 can get user collection.
+    actingAs($this->adminManager)
+        ->getJson("/api/v1/users")
         ->assertOk()
         ->assertJsonCount(3, 'data');
 
-    // Test user with permission level 2 can get user collection.
-    actingAs($this->permittedUser2);
-    getJson("/api/v1/users")
+    // Test user with permission level 1 can get user collection.
+    actingAs($this->admin)
+        ->getJson("/api/v1/users")
         ->assertOk()
         ->assertJsonCount(3, 'data');
 
     // Test user with permission level 0 can not get user collection.
-    actingAs($this->nonPermittedUser);
-    getJson("/api/v1/users")
+    actingAs($this->normalUser)
+        ->getJson("/api/v1/users")
         ->assertNotFound();
 });
 
-it('can return user collection in the correct format', function () {
-    actingAs($this->permittedUser1);
-
-    getJson("/api/v1/users")
+it('returns user collection in the correct format', function () {
+    actingAs($this->adminManager)
+        ->getJson("/api/v1/users")
         ->assertOk()
         ->assertJsonStructure([
             'data' => [
@@ -66,11 +51,12 @@ it('can return user collection in the correct format', function () {
 });
 
 it('can return correct user collection after filtering by attributes', function () {
-    actingAs($this->permittedUser1);
+    actingAs($this->adminManager);
 
     // Test filter by name.
-    getJson("/api/v1/users?name=$this->permittedUser1->name")
+    $fuzzyName = substr($this->adminManager->name, 0, -1);
+    getJson(route('api.v1.users.index', ['name' => $fuzzyName]))
         ->assertOk()
         ->assertJsonCount(1, 'data')
-        ->assertJsonFragment(['id' => $this->permittedUser1->id]);
+        ->assertJsonFragment(['id' => $this->adminManager->id]);
 });

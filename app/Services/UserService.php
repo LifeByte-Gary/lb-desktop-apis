@@ -20,10 +20,15 @@ class UserService
      * Get the collection of users by filter.
      *
      * @param array $filter
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function filter(array $filter): Collection|LengthAwarePaginator
     {
+        // Purify filter: remove invalid filter attributes.
+//        array_filter($filter, function ($key) {
+//            $validAttributes = ['name', 'email', 'company', 'department', 'job_title', 'desk', 'state', 'type', 'permission_level', 'pagination'];
+//            return in_array($key, $validAttributes);
+//        }, ARRAY_FILTER_USE_KEY);
         $purifiedFilter = [
             'name' => $filter['name'] ?? null,
             'email' => $filter['email'] ?? null,

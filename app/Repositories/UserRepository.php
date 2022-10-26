@@ -17,47 +17,45 @@ class UserRepository implements UserInterface
      */
     public function filter(array $filter): Collection|LengthAwarePaginator
     {
-//        dd($filter);
-//        $query = User::query()
-//            ->when($filter['name'], static function ($query, $name) {
-//                $query->where('name', 'like', "%$name%");
-//            });
-//            ->when($filter['email'], static function ($query, $email) {
-//                $query->where('email', 'like', "%$email%");
-//            })
-//            ->when($filter['department'], function ($query, $department) {
-//                $query->where('department', $department);
-//            })
-//            ->when($filter['job_title'], function ($query, $jobTitle) {
-//                $query->where('job_title', 'like', "%$jobTitle%");
-//            })
-//            ->when($filter['company'], function ($query, $company) {
-//                $query->where('company', 'like', "%$company%");
-//            })
-//            ->when($filter['desk'], function ($query, $desk) {
-//                $query->where('desk', 'like', "%$desk%");
-//            })
-//            ->when($filter['type'], function ($query, $type) {
-//                $query->where('type', $type);
-//            });
-//            ->when($filter['state'], function ($query, $state) {
-//                $query->where('state', $state);
-//            })
-//            ->when($filter['permission_level'], function ($query, $permissionLevel) {
-//                $query->where('permission_level', $permissionLevel);
-//            });
+        $query = User::query();
 
-//        if (isset($filter['state'])) {
-//            $query->where('state', $filter['state']);
-//        }
-//
-//        if (isset($filter['permission_level'])) {
-//            $query->where('permission_level', $filter['permission_level']);
-//        }
+        if (isset($filter['name'])) {
+            $query->where('name', 'like', "%${filter['name']}%");
+        }
 
-//        return $filter['pagination'] ? $query->paginate() : $query->get();
+        if (isset($filter['email'])) {
+            $query->where('email', 'like', "%${filter['email']}%");
+        }
 
-        return User::all();
+        if (isset($filter['department'])) {
+            $query->where('department', $filter['department']);
+        }
+
+        if (isset($filter['job_title'])) {
+            $query->where('job_title', 'like', "%${filter['job_title']}%");
+        }
+
+        if (isset($filter['company'])) {
+            $query->where('company', $filter['company']);
+        }
+
+        if (isset($filter['desk'])) {
+            $query->where('desk', 'like', "%${filter['desk']}%");
+        }
+
+        if (isset($filter['type'])) {
+            $query->where('type', $filter['type']);
+        }
+
+        if (isset($filter['state'])) {
+            $query->where('state', $filter['state']);
+        }
+
+        if (isset($filter['permission_level'])) {
+            $query->where('permission_level', $filter['permission_level']);
+        }
+
+        return $filter['pagination'] ? $query->paginate() : $query->get();
     }
 
     /**

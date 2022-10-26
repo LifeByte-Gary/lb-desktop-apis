@@ -3,50 +3,31 @@
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use function Pest\Laravel\actingAs;
-use function Pest\Laravel\getJson;
 
 uses(RefreshDatabase::class);
 
 it('only allows permitted users to get user information', function () {
-    $permittedUser1 = User::factory()->create([
-        'permission_level' => 1
-    ]);
-    $permittedUser2 = User::factory()->create([
-        'permission_level' => 2
-    ]);
-    $nonPermittedUser = User::factory()->create([
-        'permission_level' => 0
-    ]);
+    // Test user with permission level 2 can get user information.
+    actingAs($this->adminManager)
+        ->getJson("/api/v1/users/{$this->normalUser->id}")
+        ->assertOk()
+        ->assertJsonFragment(['id' => $this->normalUser->id]);
 
     // Test user with permission level 1 can get user information.
-    actingAs($permittedUser1);
-    $response = getJson("/api/v1/users/$permittedUser1->id");
+    actingAs($this->admin)
+        ->getJson("/api/v1/users/{$this->normalUser->id}")
+        ->assertOk()
+        ->assertJsonFragment(['id' => $this->normalUser->id]);
 
-    $response->assertOk()
-        ->assertJsonFragment(['id' => $permittedUser1->id]);
-
-    // Test user with permission level 2 can get user information.
-    actingAs($permittedUser2);
-    $response = getJson("/api/v1/users/$permittedUser1->id");
-
-    $response->assertOk()
-        ->assertJsonFragment(['id' => $permittedUser1->id]);
-
-    // Test user with no permission can not get user information.
-    actingAs($nonPermittedUser);
-    $response = getJson("/api/v1/users/$permittedUser1->id");
-
-    $response->assertNotFound();
+    // Test user with permission level 0 can not get user information.
+    actingAs($this->normalUser)
+        ->getJson("/api/v1/users/{$this->normalUser->id}")
+        ->assertNotFound();
 });
 
 it('returns user information in the correct format', function () {
-    $permittedUser = User::factory()->create([
-        'permission_level' => 2
-    ]);
-    actingAs($permittedUser);
-    $response = getJson("/api/v1/users/$permittedUser->id");
-
-    $response->assertOk()
+    actingAs($this->admin)
+        ->getJson("/api/v1/users/{$this->normalUser->id}")->assertOk()
         ->assertJsonStructure([
             'data' => [
                 'id',
@@ -63,5 +44,5 @@ it('returns user information in the correct format', function () {
                 'updated_at',
             ]
         ])
-        ->assertJsonMissingExact(['password' => $permittedUser->password]);
+        ->assertJsonMissing(['password' => $this->normalUser->password]);
 });

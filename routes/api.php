@@ -14,12 +14,20 @@ Route::prefix('/v1')
 
                 // User routes
                 Route::controller(UserController::class)
+                    ->name('users.')
                     ->group(function () {
-                        Route::get('/users', 'index')->can('viewAny', User::class);
-                        Route::post('/users', 'store');
-                        Route::get('/users/{user}', 'show')->can('view', 'user');
-                        Route::put('/users/{user}', 'update');
-                        Route::delete('/users/{user}', 'destroy');
+                        Route::get('/users', 'index')
+                            ->can('viewAny', User::class)
+                            ->name('index');
+                        Route::post('/users', 'store')
+                            ->name('store');
+                        Route::get('/users/{user}', 'show')
+                            ->can('view', 'user')
+                            ->name('show');
+                        Route::put('/users/{user}', 'update')
+                            ->name('update');
+                        Route::delete('/users/{user}', 'destroy')
+                            ->name('destroy');
                     });
             });
     });
