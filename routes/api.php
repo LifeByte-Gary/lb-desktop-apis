@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/v1')
@@ -14,7 +15,7 @@ Route::prefix('/v1')
                 // User routes
                 Route::controller(UserController::class)
                     ->group(function () {
-                        Route::get('/users', 'index');
+                        Route::get('/users', 'index')->can('viewAny', User::class);
                         Route::post('/users', 'store');
                         Route::get('/users/{user}', 'show')->can('view', 'user');
                         Route::put('/users/{user}', 'update');

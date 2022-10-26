@@ -14,11 +14,13 @@ class UserPolicy
      * Determine whether the user can view any models.
      *
      * @param User $user
-     * @return Response|bool
+     * @return Response
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): Response
     {
-        //
+        return $user->permission_level > 0
+            ? Response::allow()
+            : Response::denyAsNotFound();
     }
 
     /**

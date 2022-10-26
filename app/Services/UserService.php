@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
 {
@@ -22,20 +22,21 @@ class UserService
      * @param array $filter
      * @return Collection
      */
-    public function filter(array $filter): Collection
+    public function filter(array $filter): Collection|LengthAwarePaginator
     {
-        return $this->userRepository->filter($filter);
-    }
+        $purifiedFilter = [
+            'name' => $filter['name'] ?? null,
+            'email' => $filter['email'] ?? null,
+            'company' => $filter['company'] ?? null,
+            'department' => $filter['department'] ?? null,
+            'job_title' => $filter['job_title'] ?? null,
+            'desk' => $filter['job_title'] ?? null,
+            'state' => isset($filter['state']) ? (int)$filter['state'] : null,
+            'type' => $filter['type'] ?? null,
+            'permission_level' => isset($filter['permission_level']) ? (int)$filter['permission_level'] : null,
+            'pagination' => !(isset($filter['paginate']) && $filter['paginate'] === 'false'),
+        ];
 
-
-    /**
-     * Find the user by ID.
-     *
-     * @param string $id
-     * @return User
-     */
-    public function findById(string $id): User
-    {
-        return $this->userRepository->findOneBy('id', $id);
+        return $this->userRepository->filter($purifiedFilter);
     }
 }
