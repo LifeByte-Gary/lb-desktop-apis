@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);
@@ -27,22 +28,21 @@ it('only allows permitted users to get user information', function () {
 
 it('returns user information in the correct format', function () {
     actingAs($this->admin)
-        ->getJson("/api/v1/users/{$this->normalUser->id}")->assertOk()
-        ->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-                'email',
-                'company',
-                'department',
-                'job_title',
-                'desk',
-                'state',
-                'type',
-                'permission_level',
-                'created_at',
-                'updated_at',
-            ]
+        ->getJson("/api/v1/users/{$this->normalUser->id}")
+        ->assertOk()
+        ->assertJsonFragment([
+            'id' => $this->normalUser->id,
+            'name' => $this->normalUser->name,
+            'email' => $this->normalUser->email,
+            'company' => $this->normalUser->company,
+            'department' => $this->normalUser->department,
+            'job_title' => $this->normalUser->job_title,
+            'desk' => $this->normalUser->desk,
+            'state' => $this->normalUser->state,
+            'type' => $this->normalUser->type,
+            'permission_level' => $this->normalUser->permission_level,
+            'created_at' => $this->normalUser->created_at,
+            'updated_at' => $this->normalUser->updated_at,
         ])
-        ->assertJsonMissing(['password' => $this->normalUser->password]);
+        ->assertJsonMissingPath('data.password');
 });

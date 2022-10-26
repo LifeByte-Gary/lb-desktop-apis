@@ -48,7 +48,7 @@ class UserFactory extends Factory
             'company' => fake()->randomElement($companies),
             'department' => fake()->randomElement($departments),
             'job_title' => fake()->jobTitle(),
-            'desk' => fake()->randomNumber(2),
+            'desk' => 'Desk ' . fake()->randomNumber(2),
             'state' => fake()-> numberBetween(0, 1),
             'type' => fake()->randomElement($types),
             'permission_level' => 0,
