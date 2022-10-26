@@ -19,7 +19,9 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $companies = [
-            'LifeByte',
+            'LifeByte Systems (AU)',
+            'LifeByte Systems (IN)',
+            'LifeByte Systems (CN)',
             'TMGM'
         ];
 
@@ -46,7 +48,6 @@ class UserFactory extends Factory
             'company' => fake()->randomElement($companies),
             'department' => fake()->randomElement($departments),
             'job_title' => fake()->jobTitle(),
-            'location_id' => fake()->numberBetween(1, 5),
             'desk' => fake()->randomNumber(2),
             'state' => fake()-> numberBetween(0, 1),
             'type' => fake()->randomElement($types),

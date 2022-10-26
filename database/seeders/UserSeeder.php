@@ -16,10 +16,9 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Gary Zhang',
             'email' => 'gary@lifebyte.io',
-            'company' => 'LifeByte',
+            'company' => 'LifeByte Systems (AU)',
             'department' => 'IT Support',
             'job_title' => 'IT',
-            'location_id' => 1,
             'desk' => '1',
             'state' => 1,
             'type' => 'Employee',

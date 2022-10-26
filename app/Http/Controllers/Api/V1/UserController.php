@@ -31,9 +31,9 @@ class UserController extends Controller
         return response('store');
     }
 
-    public function show(String $id): UserResource
+    public function show(User $user): UserResource
     {
-        return new UserResource($this->userService->findById($id));
+        return new UserResource($user);
     }
 
     public function update(UpdateUserRequest $request, User $user)

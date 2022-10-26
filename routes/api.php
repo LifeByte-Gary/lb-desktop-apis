@@ -16,7 +16,7 @@ Route::prefix('/v1')
                     ->group(function () {
                         Route::get('/users', 'index');
                         Route::post('/users', 'store');
-                        Route::get('/users/{user}', 'show');
+                        Route::get('/users/{user}', 'show')->can('view', 'user');
                         Route::put('/users/{user}', 'update');
                         Route::delete('/users/{user}', 'destroy');
                     });

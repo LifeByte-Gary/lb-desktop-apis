@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('company');
             $table->string('department')->nullable();
             $table->string('job_title')->nullable();
-            $table->integer('location_id');
             $table->string('desk')->nullable();
             $table->tinyInteger('state')->default(1);
             $table->string('type')->default('employee');
