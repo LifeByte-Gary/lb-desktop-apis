@@ -28,6 +28,7 @@ class SendUserCreatedNotification
         $user = $event->user;
         $password = $event->password;
 
-        Mail::to($user->email)->send(new UserCreatedMail($user, $password));
+        Mail::to($user->email)
+            ->queue((new UserCreatedMail($user, $password))->afterCommit());
     }
 }
