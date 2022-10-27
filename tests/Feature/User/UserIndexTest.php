@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
 uses(RefreshDatabase::class);
 
-it('only returns user collection to permitted users', function () {
+it('only returns user collection to admin users', function () {
     // Test user with permission level 2 can get user collection.
     actingAs($this->adminManager)
         ->getJson("/api/v1/users")
@@ -30,31 +30,42 @@ it('returns user collection in the correct format', function () {
     actingAs($this->adminManager)
         ->getJson("/api/v1/users")
         ->assertOk()
-        ->assertJsonStructure([
-            'data' => [
-                "*" => [
-                    'id',
-                    'name',
-                    'email',
-                    'company',
-                    'department',
-                    'job_title',
-                    'desk',
-                    'state',
-                    'type',
-                    'permission_level',
-                    'created_at',
-                    'updated_at',
-                ]
-            ]
-        ]);
+        ->assertJson(function (AssertableJson $json) {
+            $json
+                ->hasAll(['meta', 'links'])
+                ->has('data', 3, function (AssertableJson $json) {
+                    $json
+                        ->hasAll([
+                            'id',
+                            'name',
+                            'email',
+                            'company',
+                            'department',
+                            'job_title',
+                            'desk',
+                            'state',
+                            'type',
+                            'permission_level',
+                            'created_at',
+                            'updated_at',
+                        ])
+                        ->missingAll(['password', 'remember_token']);
+                });
+        });
 });
 
-it('can return correct user collection after filtering by attributes', function () {
+it('can return correct user collection filtered by name', function () {
     actingAs($this->adminManager);
 
-    // Test filter by name.
-    $fuzzyName = substr($this->adminManager->name, 0, -1);
+    $fuzzyName = 'User';
+    getJson(route('api.v1.users.index', ['name' => $fuzzyName]))
+        ->assertOk()
+        ->assertJsonCount(3, 'data')
+        ->assertJsonFragment(['id' => $this->adminManager->id])
+        ->assertJsonFragment(['id' => $this->admin->id])
+        ->assertJsonFragment(['id' => $this->normalUser->id]);
+
+    $fuzzyName = 'One';
     getJson(route('api.v1.users.index', ['name' => $fuzzyName]))
         ->assertOk()
         ->assertJsonCount(1, 'data')

@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);
@@ -44,5 +42,6 @@ it('returns user information in the correct format', function () {
             'created_at' => $this->normalUser->created_at,
             'updated_at' => $this->normalUser->updated_at,
         ])
-        ->assertJsonMissingPath('data.password');
+        ->assertJsonMissingPath('data.password')
+        ->assertJsonMissingPath('data.remember_token');
 });

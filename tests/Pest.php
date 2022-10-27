@@ -41,9 +41,15 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something(): void
+/**
+ * Create a user.
+ *
+ * @param array $attributes
+ * @return User
+ */
+function creteUser(array $attributes): User
 {
-
+    return User::factory()->create($attributes);
 }
 
 /*
@@ -58,16 +64,17 @@ function something(): void
 
 uses()
     ->beforeEach(function () {
-        $this->adminManager = User::factory()->create([
-            'permission_level' => 2
+        $this->adminManager = creteUser([
+            'name' => 'User One',
+            'permission_level' => 2,
         ]);
-
-        $this->admin = User::factory()->create([
-            'permission_level' => 1
+        $this->admin = creteUser([
+            'name' => 'User Two',
+            'permission_level' => 1,
         ]);
-
-        $this->normalUser = User::factory()->create([
-            'permission_level' => 0
+        $this->normalUser = creteUser([
+            'name' => 'User Three',
+            'permission_level' => 0,
         ]);
     })
     ->in('Feature/User');

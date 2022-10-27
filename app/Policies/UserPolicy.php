@@ -18,7 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user): Response
     {
-        return $user->permission_level > 0
+        return $user->isAdmin()
             ? Response::allow()
             : Response::denyAsNotFound();
     }
@@ -32,7 +32,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): Response
     {
-        return $user->permission_level > 0
+        return $user->isAdmin()
             ? Response::allow()
             : Response::denyAsNotFound();
     }

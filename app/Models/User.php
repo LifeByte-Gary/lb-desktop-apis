@@ -58,4 +58,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Identify whether the current user is an admin with permission level greater than 0.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->permission_level > 0;
+    }
+
+    /**
+     * Identify whether the current user is an admin manager with permission level greater than 1.
+     *
+     * @return bool
+     */
+    public function isAdminManager(): bool
+    {
+        return $this->permission_level > 1;
+    }
 }
