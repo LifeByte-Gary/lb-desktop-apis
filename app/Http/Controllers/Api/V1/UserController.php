@@ -35,11 +35,13 @@ class UserController extends Controller
     /**
      * @throws AuthorizationException
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): UserResource
     {
         $this->authorize('create', User::class);
 
-        return response('store');
+        $user = $this->userService->create($request->all());
+
+        return new UserResource($user);
     }
 
     /**

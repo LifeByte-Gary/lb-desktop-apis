@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -11,9 +13,9 @@ class StoreUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -21,10 +23,18 @@ class StoreUserRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', Rule::unique(User::class, 'email')],
+            'company' => ['required', 'string'],
+            'department' => ['string'],
+            'job_title' => ['string'],
+            'desk' => ['string'],
+            'type' => ['required', Rule::in(['Employee', 'Storage', 'Meeting Room', 'Others'])],
+            'state' => ['required', 'numeric', 'min:0', 'max:1'],
+            'permission_level' => ['required', 'numeric', 'min:0', $this->user()->isAdminManager() ? 'max:2' : 'max:0'],
         ];
     }
 }

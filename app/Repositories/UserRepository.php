@@ -57,4 +57,12 @@ class UserRepository implements UserInterface
 
         return $filter['paginate'] ? $query->paginate() : $query->get();
     }
+
+    /**
+     * Insert a new user into database by given attributes.
+     */
+    public function create(array $attributes): User
+    {
+        return User::create($attributes);
+    }
 }
