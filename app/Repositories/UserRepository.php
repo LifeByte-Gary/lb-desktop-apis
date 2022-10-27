@@ -57,20 +57,4 @@ class UserRepository implements UserInterface
 
         return $filter['paginate'] ? $query->paginate() : $query->get();
     }
-
-    /**
-     * Find the user by attribute.
-     *
-     * @param string $attribute
-     * @param $value
-     * @return User
-     */
-    public function findOneBy(string $attribute, $value): User
-    {
-        if ($attribute === 'id') {
-            return User::findOrFail($value);
-        }
-
-        return User::where($attribute, $value)->firstOrFail();
-    }
 }
