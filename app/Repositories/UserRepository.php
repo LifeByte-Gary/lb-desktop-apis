@@ -27,16 +27,16 @@ class UserRepository implements UserInterface
             $query->where('email', 'like', "%${filter['email']}%");
         }
 
+        if (isset($filter['company'])) {
+            $query->where('company', $filter['company']);
+        }
+
         if (isset($filter['department'])) {
             $query->where('department', $filter['department']);
         }
 
         if (isset($filter['job_title'])) {
             $query->where('job_title', 'like', "%${filter['job_title']}%");
-        }
-
-        if (isset($filter['company'])) {
-            $query->where('company', $filter['company']);
         }
 
         if (isset($filter['desk'])) {
@@ -55,7 +55,7 @@ class UserRepository implements UserInterface
             $query->where('permission_level', $filter['permission_level']);
         }
 
-        return $filter['pagination'] ? $query->paginate() : $query->get();
+        return $filter['paginate'] ? $query->paginate() : $query->get();
     }
 
     /**

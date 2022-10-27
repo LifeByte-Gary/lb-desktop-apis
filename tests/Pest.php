@@ -47,7 +47,7 @@ expect()->extend('toBeOne', function () {
  * @param array $attributes
  * @return User
  */
-function creteUser(array $attributes): User
+function createUser(array $attributes): User
 {
     return User::factory()->create($attributes);
 }
@@ -64,16 +64,37 @@ function creteUser(array $attributes): User
 
 uses()
     ->beforeEach(function () {
-        $this->adminManager = creteUser([
+        $this->adminManager = createUser([
             'name' => 'User One',
+            'email' => 'user.one@test.com',
+            'company' => 'LifeByte System (AU)',
+            'department' => 'Support',
+            'job_title' => 'Senior IT Support',
+            'desk' => 'Desk 1',
+            'type' => 'Employee',
+            'state' => 1,
             'permission_level' => 2,
         ]);
-        $this->admin = creteUser([
+        $this->admin = createUser([
             'name' => 'User Two',
+            'email' => 'user.two@test.com',
+            'company' => 'LifeByte System (AU)',
+            'department' => 'Support',
+            'job_title' => 'Junior IT Support',
+            'desk' => 'Desk 10',
+            'type' => 'Employee',
+            'state' => 2,
             'permission_level' => 1,
         ]);
-        $this->normalUser = creteUser([
+        $this->normalUser = createUser([
             'name' => 'User Three',
+            'email' => 'user.three@test.com',
+            'company' => 'LifeByte System (CN)',
+            'department' => 'Marketing',
+            'job_title' => 'Junior Marketing Consultant',
+            'desk' => 'Desk 25',
+            'type' => 'Employee',
+            'state' => 0,
             'permission_level' => 0,
         ]);
     })

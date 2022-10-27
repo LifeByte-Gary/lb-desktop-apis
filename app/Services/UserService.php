@@ -24,22 +24,17 @@ class UserService
      */
     public function filter(array $filter): Collection|LengthAwarePaginator
     {
-        // Purify filter: remove invalid filter attributes.
-//        array_filter($filter, function ($key) {
-//            $validAttributes = ['name', 'email', 'company', 'department', 'job_title', 'desk', 'state', 'type', 'permission_level', 'pagination'];
-//            return in_array($key, $validAttributes);
-//        }, ARRAY_FILTER_USE_KEY);
         $purifiedFilter = [
             'name' => $filter['name'] ?? null,
             'email' => $filter['email'] ?? null,
             'company' => $filter['company'] ?? null,
             'department' => $filter['department'] ?? null,
             'job_title' => $filter['job_title'] ?? null,
-            'desk' => $filter['job_title'] ?? null,
+            'desk' => $filter['desk'] ?? null,
             'state' => isset($filter['state']) ? (int)$filter['state'] : null,
             'type' => $filter['type'] ?? null,
             'permission_level' => isset($filter['permission_level']) ? (int)$filter['permission_level'] : null,
-            'pagination' => !(isset($filter['paginate']) && $filter['paginate'] === 'false'),
+            'paginate' => !(isset($filter['paginate']) && ($filter['paginate'] === 'false' || (bool)$filter['paginate'] === false)),
         ];
 
         return $this->userRepository->filter($purifiedFilter);
