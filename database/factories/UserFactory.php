@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -15,13 +16,42 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
+        $companies = [
+            'LifeByte Systems (AU)',
+            'LifeByte Systems (IN)',
+            'LifeByte Systems (CN)',
+            'TMGM'
+        ];
+
+        $departments = [
+            'IT Support',
+            'Development',
+            'BA',
+            'DevOp',
+            'Risk'
+        ];
+
+        $types = [
+            'Employee',
+            'Storage',
+            'Meeting Room',
+            'Others'
+        ];
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'company' => fake()->randomElement($companies),
+            'department' => fake()->randomElement($departments),
+            'job_title' => fake()->jobTitle(),
+            'desk' => 'Desk ' . fake()->randomNumber(2),
+            'state' => fake()-> numberBetween(0, 1),
+            'type' => fake()->randomElement($types),
+            'permission_level' => 0,
             'remember_token' => Str::random(10),
         ];
     }
@@ -31,7 +61,7 @@ class UserFactory extends Factory
      *
      * @return static
      */
-    public function unverified()
+    public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
