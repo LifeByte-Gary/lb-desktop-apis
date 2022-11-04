@@ -59,10 +59,33 @@ class UserRepository implements UserInterface
     }
 
     /**
-     * Insert a new user into database by given attributes.
+     * Insert a new user with given attributes into the database.
+     *
+     * @param array $attributes
+     * @return User
      */
     public function create(array $attributes): User
     {
         return User::create($attributes);
+    }
+
+    /**
+     * Update a user with given attributes.
+     *
+     * @param User $user
+     * @param array $attributes
+     * @return void
+     */
+    public function update(User $user, array $attributes): void
+    {
+        if (count($attributes) === 0) {
+            return;
+        }
+
+        foreach ($attributes as $key => $value) {
+            $user[$key] = $value;
+        }
+
+        $user->save();
     }
 }

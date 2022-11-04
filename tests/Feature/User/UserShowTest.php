@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature\User;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use function Pest\Laravel\actingAs;
 

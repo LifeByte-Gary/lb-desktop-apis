@@ -27,7 +27,7 @@ Route::prefix('/v1')
                         Route::get('/users', 'index')->name('index');
                         Route::post('/users', 'store')->name('store');
                         Route::get('/users/{user}', 'show')->name('show');
-                        Route::put('/users/{user}', 'update')->name('update');
+                        Route::patch('/users/{user}', 'update')->name('update');
                         Route::delete('/users/{user}', 'destroy')->name('destroy');
                     });
             });

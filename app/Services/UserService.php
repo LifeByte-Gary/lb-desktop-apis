@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\UserCreated;
+use App\Events\UserUpdated;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,22 +28,17 @@ class UserService
      */
     public function filter(array $filter): Collection|LengthAwarePaginator
     {
-        $purifiedFilter = [
-            'name' => $filter['name'] ?? null,
-            'email' => $filter['email'] ?? null,
-            'company' => $filter['company'] ?? null,
-            'department' => $filter['department'] ?? null,
-            'job_title' => $filter['job_title'] ?? null,
-            'desk' => $filter['desk'] ?? null,
-            'state' => isset($filter['state']) ? (int)$filter['state'] : null,
-            'type' => $filter['type'] ?? null,
-            'permission_level' => isset($filter['permission_level']) ? (int)$filter['permission_level'] : null,
-            'paginate' => !(isset($filter['paginate']) && ($filter['paginate'] === 'false' || (bool)$filter['paginate'] === false)),
-        ];
+        $filter['paginate'] = !(isset($filter['paginate']) && ($filter['paginate'] === 'false' || (bool)$filter['paginate'] === false));
 
-        return $this->userRepository->filter($purifiedFilter);
+        return $this->userRepository->filter($filter);
     }
 
+    /**
+     * Create a user and store it into the database.
+     *
+     * @param $payload
+     * @return User
+     */
     public function create($payload): User
     {
         $passwordString = 'password';
@@ -53,5 +49,70 @@ class UserService
         UserCreated::dispatch($user, $passwordString);
 
         return $user;
+    }
+
+    /**
+     * Update an existing user's attributes.
+     *
+     * @param User $user
+     * @param array $payload
+     * @return void
+     */
+    public function update(User $user, array $payload): void
+    {
+        $oldAttributes = $user->getAttributes();
+
+        $this->userRepository->update($user, $payload);
+
+        UserUpdated::dispatch($oldAttributes, $payload);
+    }
+
+    /**
+     * Extract and parse user's attribute from a given array.
+     *
+     * @param array $payload
+     * @return array
+     */
+    public function getAttributes(array $payload): array
+    {
+        $attributes = [];
+
+        if (isset($payload['name'])) {
+            $attributes['name'] = $payload['name'];
+        }
+
+        if (isset($payload['email'])) {
+            $attributes['email'] = $payload['email'];
+        }
+
+        if (isset($payload['company'])) {
+            $attributes['company'] = $payload['company'];
+        }
+
+        if (isset($payload['department'])) {
+            $attributes['department'] = $payload['department'];
+        }
+
+        if (isset($payload['job_title'])) {
+            $attributes['job_title'] = $payload['job_title'];
+        }
+
+        if (isset($payload['desk'])) {
+            $attributes['desk'] = $payload['desk'];
+        }
+
+        if (isset($payload['state'])) {
+            $attributes['state'] = (int)$payload['state'];
+        }
+
+        if (isset($payload['type'])) {
+            $attributes['type'] = $payload['type'];
+        }
+
+        if (isset($payload['permission_level'])) {
+            $attributes['permission_level'] = (int)$payload['permission_level'];
+        }
+
+        return $attributes;
     }
 }

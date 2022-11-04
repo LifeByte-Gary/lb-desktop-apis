@@ -29,12 +29,19 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string'],
             'email' => ['required', 'email', Rule::unique(User::class, 'email')],
             'company' => ['required', 'string'],
-            'department' => ['string'],
-            'job_title' => ['string'],
-            'desk' => ['string'],
+            'department' => ['string', 'nullable'],
+            'job_title' => ['string', 'nullable'],
+            'desk' => ['string', 'nullable'],
             'type' => ['required', Rule::in(['Employee', 'Storage', 'Meeting Room', 'Others'])],
             'state' => ['required', 'numeric', 'min:0', 'max:1'],
             'permission_level' => ['required', 'numeric', 'min:0', $this->user()->isAdminManager() ? 'max:2' : 'max:0'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'permission_level.max' => 'Only an IT manager can create a user with a high permission level.'
         ];
     }
 }

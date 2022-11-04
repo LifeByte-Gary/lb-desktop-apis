@@ -4,39 +4,41 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserCreated extends Mailable
+class UserUpdated extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * The user instance.
+     * The user's old attributes.
      *
-     * @var User
+     * @var array
      */
-    public User $user;
+    public array $attributes;
+
 
     /**
-     * The cleartext password of the user.
+     * The update request payload.
      *
-     * @var string
+     * @var array
      */
-    public string $password;
+    public array $payload;
 
     /**
      * Create a new message instance.
      *
-     * @param User $user
-     * @param string $password
+     * @param array $attributes
+     * @param array $payload
      */
-    public function __construct(User $user, string $password)
+    public function __construct(array $attributes, array $payload)
     {
-        $this->user = $user;
-        $this->password = $password;
+        $this->attributes = $attributes;
+        $this->payload = $payload;
     }
 
     /**
@@ -44,10 +46,10 @@ class UserCreated extends Mailable
      *
      * @return Envelope
      */
-    public function envelope(): Envelope
+    public function envelope()
     {
         return new Envelope(
-            subject: 'User Created',
+            subject: 'User Updated',
         );
     }
 
@@ -59,7 +61,7 @@ class UserCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.users.created',
+            view: 'mails.users.updated',
         );
     }
 
@@ -68,7 +70,7 @@ class UserCreated extends Mailable
      *
      * @return array
      */
-    public function attachments(): array
+    public function attachments()
     {
         return [];
     }

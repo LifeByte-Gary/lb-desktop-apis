@@ -10,6 +10,7 @@ use App\Services\UserService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -39,7 +40,8 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $user = $this->userService->create($request->all());
+        $filter = $this->userService->getAttributes($request->all());
+        $user = $this->userService->create($filter);
 
         return new UserResource($user);
     }
@@ -57,11 +59,15 @@ class UserController extends Controller
     /**
      * @throws AuthorizationException
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): Response
     {
         $this->authorize('update', $user);
 
-        return response('update');
+        $payload = $this->userService->getAttributes($request->input());
+
+        $this->userService->update($user, $payload);
+
+        return response()->noContent();
     }
 
     /**
